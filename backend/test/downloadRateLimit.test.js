@@ -4,23 +4,33 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const storageDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'dms-rate-limit-'));
-process.env.STORAGE_DIRECTORY = storageDirectory;
-process.env.DOWNLOAD_RATE_LIMIT_MAX_REQUESTS = '1';
-process.env.DOWNLOAD_RATE_LIMIT_WINDOW_MS = '60000';
+function createRateLimitedApp() {
+  const storageDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'dms-rate-limit-'));
+  process.env.STORAGE_DIRECTORY = storageDirectory;
+  process.env.DOWNLOAD_RATE_LIMIT_MAX_REQUESTS = '1';
+  process.env.DOWNLOAD_RATE_LIMIT_WINDOW_MS = '60000';
 
-delete require.cache[require.resolve('../src/app')];
-const app = require('../src/app');
+  delete require.cache[require.resolve('../src/app')];
+
+  return {
+    app: require('../src/app'),
+    cleanup() {
+      fs.rmSync(storageDirectory, { recursive: true, force: true });
+      delete process.env.STORAGE_DIRECTORY;
+      delete process.env.DOWNLOAD_RATE_LIMIT_MAX_REQUESTS;
+      delete process.env.DOWNLOAD_RATE_LIMIT_WINDOW_MS;
+      delete require.cache[require.resolve('../src/app')];
+    },
+  };
+}
 
 test('bloqueia downloads repetidos acima do limite configurado', async (t) => {
+  const { app, cleanup } = createRateLimitedApp();
   const server = app.listen(0);
 
   t.after(() => {
     server.close();
-    fs.rmSync(storageDirectory, { recursive: true, force: true });
-    delete process.env.DOWNLOAD_RATE_LIMIT_MAX_REQUESTS;
-    delete process.env.DOWNLOAD_RATE_LIMIT_WINDOW_MS;
-    delete require.cache[require.resolve('../src/app')];
+    cleanup();
   });
 
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
@@ -46,10 +56,12 @@ test('bloqueia downloads repetidos acima do limite configurado', async (t) => {
 });
 
 test('mantem resposta 404 para downloads de documentos inexistentes', async (t) => {
+  const { app, cleanup } = createRateLimitedApp();
   const server = app.listen(0);
 
   t.after(() => {
     server.close();
+    cleanup();
   });
 
   const baseUrl = `http://127.0.0.1:${server.address().port}`;
