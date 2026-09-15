@@ -46,14 +46,14 @@ async function uploadDocument(baseUrl, fileName, content, owner) {
   return response;
 }
 
-test('o app backend é exportado', async (t) => {
+test('o app backend é exportado', { concurrency: false }, async (t) => {
   const { app } = await createTestServer(t);
 
   assert.ok(app, 'o app deve estar definido');
   assert.strictEqual(typeof app, 'function', 'o app Express deve ser uma função');
 });
 
-test('faz upload de um documento', async (t) => {
+test('faz upload de um documento', { concurrency: false }, async (t) => {
   const { baseUrl, storageDirectory } = await createTestServer(t);
 
   const uploadResponse = await uploadDocument(baseUrl, 'nota.txt', 'conteudo do documento', 'usuario-1');
@@ -72,7 +72,7 @@ test('faz upload de um documento', async (t) => {
   assert.strictEqual(fs.readFileSync(path.join(storageDirectory, storedFiles[0]), 'utf8'), 'conteudo do documento');
 });
 
-test('lista documentos por proprietario', async (t) => {
+test('lista documentos por proprietario', { concurrency: false }, async (t) => {
   const { baseUrl } = await createTestServer(t);
 
   const firstUploadResponse = await uploadDocument(baseUrl, 'primeiro.txt', 'arquivo 1', 'usuario-1');
@@ -95,7 +95,7 @@ test('lista documentos por proprietario', async (t) => {
   assert.deepStrictEqual(await listAllResponse.json(), [firstDocument, secondDocument]);
 });
 
-test('baixa um documento pelo id', async (t) => {
+test('baixa um documento pelo id', { concurrency: false }, async (t) => {
   const { baseUrl } = await createTestServer(t);
 
   const uploadResponse = await uploadDocument(baseUrl, 'download.txt', 'conteudo para download', 'usuario-1');
