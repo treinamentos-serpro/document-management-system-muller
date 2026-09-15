@@ -44,3 +44,18 @@ test('bloqueia downloads repetidos acima do limite configurado', async (t) => {
   });
   assert.ok(secondDownloadResponse.headers.get('retry-after'));
 });
+
+test('mantem resposta 404 para downloads de documentos inexistentes', async (t) => {
+  const server = app.listen(0);
+
+  t.after(() => {
+    server.close();
+  });
+
+  const baseUrl = `http://127.0.0.1:${server.address().port}`;
+  const firstResponse = await fetch(`${baseUrl}/documents/documento-inexistente/download`);
+  const secondResponse = await fetch(`${baseUrl}/documents/documento-inexistente/download`);
+
+  assert.strictEqual(firstResponse.status, 404);
+  assert.strictEqual(secondResponse.status, 404);
+});
