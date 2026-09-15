@@ -14,14 +14,12 @@ class DocumentController {
     }
 
     const document = this.documentService.createDocument(req.file, owner);
-    return res.status(201).json(this.documentService.toResponse(document));
+    return res.status(201).json(document);
   };
 
   list = (req, res) => {
     const owner = req.query.owner?.trim();
-    const documents = this.documentService
-      .listDocuments(owner)
-      .map((document) => this.documentService.toResponse(document));
+    const documents = this.documentService.listDocuments(owner);
 
     return res.json(documents);
   };

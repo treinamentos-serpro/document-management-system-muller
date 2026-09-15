@@ -1,4 +1,5 @@
-const { randomUUID } = require('crypto');
+const { buildDocumentFromUpload } = require('./documentFactory');
+const { toPublicDocument } = require('./documentPresenter');
 
 class DocumentService {
   constructor(documentRepository) {
@@ -6,21 +7,13 @@ class DocumentService {
   }
 
   createDocument(file, owner) {
-    const document = {
-      id: randomUUID(),
-      originalName: file.originalname,
-      storedName: file.filename,
-      mimeType: file.mimetype,
-      size: file.size,
-      uploadedAt: new Date().toISOString(),
-      owner,
-    };
-
-    return this.documentRepository.save(document);
+    const document = buildDocumentFromUpload(file, owner);
+    const savedDocument = this.documentRepository.save(document);
+    return toPublicDocument(savedDocument);
   }
 
   listDocuments(owner) {
-    return this.documentRepository.findAll(owner);
+    return this.documentRepository.findAll(owner).map(toPublicDocument);
   }
 
   getDocument(id) {
@@ -29,11 +22,6 @@ class DocumentService {
 
   getDocumentFilePath(document) {
     return this.documentRepository.getFilePath(document);
-  }
-
-  toResponse(document) {
-    const { storedName, mimeType, ...metadata } = document;
-    return metadata;
   }
 }
 
