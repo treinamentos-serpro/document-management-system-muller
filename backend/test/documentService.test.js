@@ -62,3 +62,9 @@ test('getDocumentDownload retorna dados de download quando o documento existe', 
     originalName: 'nota.txt',
   });
 });
+
+test('getDocumentDownload retorna null quando o documento nao existe', () => {
+  const documentService = new DocumentService(createDocumentRepositoryDouble());
+
+  assert.strictEqual(documentService.getDocumentDownload('documento-inexistente'), null);
+});
