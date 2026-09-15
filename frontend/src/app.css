@@ -1,0 +1,65 @@
+:root {
+  color: #1e2b28;
+  background: #e8f0e8;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+button, input { font: inherit; }
+
+button {
+  border: 0;
+  border-radius: 4px;
+  background: #246a4e;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.65rem 0.9rem;
+}
+
+button:hover { background: #174d38; }
+button:disabled { cursor: wait; opacity: 0.7; }
+input {
+  width: 100%;
+  border: 1px solid #a8b9ae;
+  border-radius: 4px;
+  padding: 0.6rem;
+}
+
+.app-shell { max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem; }
+.app-header { border-bottom: 3px solid #e9aa42; margin-bottom: 2rem; padding-bottom: 1.5rem; }
+.eyebrow { color: #a14b21; font-size: 0.8rem; font-weight: bold; letter-spacing: 0; margin: 0 0 0.5rem; text-transform: uppercase; }
+h1, h2, p { margin-top: 0; }
+h1 { font-size: 2.4rem; margin-bottom: 0.5rem; }
+h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+.workspace { display: grid; gap: 2rem; grid-template-columns: minmax(220px, 0.7fr) minmax(0, 2fr); }
+.upload-panel { border-right: 1px solid #a8b9ae; padding-right: 2rem; }
+.upload-form { display: grid; gap: 1rem; }
+.upload-form label { display: grid; font-weight: bold; gap: 0.4rem; }
+.form-error { color: #9d241d; margin: 0; }
+.section-heading { align-items: start; display: flex; justify-content: space-between; gap: 1rem; }
+.section-heading h2 { margin-bottom: 0.2rem; }
+.section-heading p { color: #5c6e65; font-size: 0.9rem; }
+.filter-form { display: flex; gap: 0.5rem; }
+.filter-form input { min-width: 190px; }
+.document-table-wrapper { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border-bottom: 1px solid #c5d0c9; padding: 0.85rem 0.6rem; text-align: left; }
+th { color: #5c6e65; font-size: 0.78rem; text-transform: uppercase; }
+td:last-child, th:last-child { text-align: right; }
+.download-button { background: #d9793b; }
+.download-button:hover { background: #ae5726; }
+.empty-state { border: 1px dashed #a8b9ae; color: #5c6e65; padding: 2rem; text-align: center; }
+.visually-hidden { height: 1px; margin: -1px; overflow: hidden; position: absolute; width: 1px; clip: rect(0, 0, 0, 0); }
+
+@media (max-width: 720px) {
+  .app-shell { padding: 2rem 1rem; }
+  h1 { font-size: 2rem; }
+  .workspace { grid-template-columns: 1fr; }
+  .upload-panel { border-bottom: 1px solid #a8b9ae; border-right: 0; padding: 0 0 2rem; }
+  .section-heading { flex-direction: column; }
+  .filter-form { width: 100%; }
+  .filter-form input { min-width: 0; }
+}
