@@ -68,3 +68,28 @@ test('getDocumentDownload retorna null quando o documento nao existe', () => {
 
   assert.strictEqual(documentService.getDocumentDownload('documento-inexistente'), null);
 });
+
+test('listDocumentMetadata aplica filtro por owner e retorna apenas metadados publicos', () => {
+  const documentService = new DocumentService(createDocumentRepositoryDouble());
+
+  documentService.createDocument({
+    originalname: 'nota.txt',
+    filename: 'arquivo-interno.txt',
+    mimetype: 'text/plain',
+    size: 21,
+  }, 'usuario-1');
+  documentService.createDocument({
+    originalname: 'relatorio.pdf',
+    filename: 'arquivo-interno.pdf',
+    mimetype: 'application/pdf',
+    size: 42,
+  }, 'usuario-2');
+
+  const documents = documentService.listDocumentMetadata('usuario-1');
+
+  assert.strictEqual(documents.length, 1);
+  assert.strictEqual(documents[0].originalName, 'nota.txt');
+  assert.strictEqual(documents[0].owner, 'usuario-1');
+  assert.strictEqual(documents[0].storedName, undefined);
+  assert.strictEqual(documents[0].mimeType, undefined);
+});

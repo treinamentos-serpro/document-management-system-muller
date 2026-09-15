@@ -25,7 +25,7 @@ class DocumentController {
   };
 
   download = (req, res) => {
-    const documentDownload = this.documentService.getDocumentDownload(req.params.id);
+    const documentDownload = req.documentDownload || this.documentService.getDocumentDownload(req.params.id);
     if (!documentDownload) {
       return res.status(404).json({ error: 'Documento nao encontrado.' });
     }

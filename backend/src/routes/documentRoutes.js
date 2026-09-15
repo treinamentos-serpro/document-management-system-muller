@@ -23,7 +23,10 @@ function createDownloadRateLimit(documentService) {
     legacyHeaders: false,
     standardHeaders: 'draft-8',
     message: { error: 'Muitas requisicoes. Tente novamente em instantes.' },
-    skip: (req) => !documentService.getDocument(req.params.id),
+    skip: (req) => {
+      req.documentDownload = documentService.getDocumentDownload(req.params.id);
+      return !req.documentDownload;
+    },
   });
 }
 
